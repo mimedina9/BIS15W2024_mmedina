@@ -1,1 +1,3 @@
-# BIS15W2024_mmedina
+# Maya's BIS 15L Repository
+# Contact Information  
+mimedina@ucdavis.edu  
