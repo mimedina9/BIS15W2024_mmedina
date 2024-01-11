@@ -1,0 +1,45 @@
+---
+title: "RMarkdown Practice"
+author: "Maya"
+date: "2024-01-11"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Title
+### Title
+#### Title
+
+[BIS 15L Webpage](https://jmledford3115.github.io/datascibiol/)
+
+```{r}
+3+5
+```
+
+```{r}
+165-92
+```
+
+```{r}
+15*263
+```
+
+```{r}
+256/3
+```
+
+#Title
+_rmarkdown_
+
+```{r}
+library("tidyverse")
+```
+
+```{r}
+ggplot(mtcars, aes(x = factor(cyl))) +
+    geom_bar()
+```
+

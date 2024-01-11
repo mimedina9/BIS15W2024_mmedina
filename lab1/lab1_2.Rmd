@@ -61,7 +61,7 @@ Order of operations applies and you don't need to add an '=' sign.
 
 What is going on here? How do we adjust this expression so the output is 12?
 ```{r}
-4-2*6
+(4-2)*6
 ```
 
 
@@ -71,6 +71,24 @@ First, we need to make a vector or string of values which we will store as an ob
 ```{r}
 x <- c(4, 6, 8, 5, 6, 7, 7, 7)
 ```
+
+```{r}
+y <- c(1, 3, 4, 6, 5, 9, 6, 7)
+```
+
+```{r}
+mean(y)
+```
+
+```{r}
+median(y)
+```
+
+```{r}
+sd(y)
+```
+
+
 
 Now we can calculate the mean of object x.  
 ```{r}
