@@ -4,4 +4,4 @@ Welcome to my repository for BIS 15L WQ2024! This contains all my work for the q
 Maya Medina
 
 ### Class Link
-https://jmledford3115.github.io/datascibiol/
+BIS 15L Webpage
