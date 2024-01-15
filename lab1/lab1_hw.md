@@ -1,7 +1,7 @@
 ---
 title: "Lab 1 Homework"
 author: "Maya Medina"
-date: "2024-01-11"
+date: "2024-01-15"
 output:
   html_document: 
     theme: spacelab
@@ -16,7 +16,7 @@ Make sure to use the formatting conventions of RMarkdown to make your report nea
 **1. Please complete the [class survey](https://forms.gle/AHHXd3aobaAdkkFg9) if you have not already done so.**
 
 **2. What is the difference between R and RStudio? What is GitHub and why is it useful to programmers?**  
-The difference between R and Rstudio is. Github is a program where people put their code and it tracks the different versions of the code including any changes made to the repositories. 
+The difference between R and Rstudio is that R is the programming language used for data visuals (statistical graphing and computation) while R studio is an IDE that provides a more user-friendly interface for coding tasks and organization. Github is a program where people put their code and it tracks the different versions of the code including any changes made to the repositories. 
 
 
 **3. Navigate to my [BIS15L](https://github.com/jmledford3115/BIS15LW2021_jledford) repository on GitHub. Notice that near the bottom there is a nice, clean description of the repository. You want this on your repository! It is built by making edits to the `README.md` file using the RMarkdown conventions. Edit your repository's `README.md` file so that you have a clean informative description, including your email address. Be creative! You don't need to just copy mine. There are lots of examples online.**  
@@ -41,6 +41,7 @@ The difference between R and Rstudio is. Github is a program where people put th
 ```
 
 **5. Did any of the results in #4 surprise you? Write two programs that calculate each expression such that the result for the first example is 4 and the second example is 16.**    
+No the results in #4 did not surprise me because the first question the multiplication comes first therefore 3*2 is 6 and 5-6 is negative 1. The second problem the multiplication should come first according to PEMDAS but 
 
 
 
