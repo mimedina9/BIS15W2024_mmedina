@@ -76,7 +76,7 @@ mean(Bluebell_Spring)
 
 ```{r}
 Opal_Spring <- hotspring_temperatures_matrix[2,]
-mean (Opal_Spring)
+mean(Opal_Spring)
 ```
 
 
@@ -110,21 +110,38 @@ Pearl_Spring <- hotspring_temperatures_matrix[8,]
 mean(Pearl_Spring)
 ```
 
+```{r}
+mn_Total <- c(35.65, 34.61667, 29.85, 39.46667, 30.85, 30.2, 32.73333, 35.46667)
+mn_Total
+```
+
 
 7. Add this as a new column in the data matrix.  
+
 ```{r}
-hotspring_temperatures_matrix <- cbind(hotspring_temperatures_matrix, mean)
+hotspring_temperatures_matrix <- cbind(hotspring_temperatures_matrix, mn_Total)
 hotspring_temperatures_matrix
 ```
 
 
 8. Show Susan's value for Opal Spring only.
+```{r}
+hotspring_temperatures_matrix [2,3]
+```
 
 
 9. Calculate the mean for Jill's column only.  
+```{r}
+Jill <- hotspring_temperatures_matrix[,1]
+mean(Jill)
+```
 
 
 10. Use the data matrix to perform one calculation or operation of your interest.
+```{r}
+Steve <- hotspring_temperatures_matrix[,2]
+mean(Steve)
+```
 
 ## Push your final code to GitHub!
 Please be sure that you check the `keep md` file in the knit preferences.  
