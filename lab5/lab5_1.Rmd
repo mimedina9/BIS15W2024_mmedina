@@ -18,6 +18,7 @@ output:
 ## Load the tidyverse
 ```{r message=FALSE, warning=FALSE}
 library("tidyverse")
+library("janitor")
 ```
 
 ## Load the data
@@ -26,11 +27,13 @@ For this lab, we will use the following two datasets:
 1. Gaeta J., G. Sass, S. Carpenter. 2012. Biocomplexity at North Temperate Lakes LTER: Coordinated Field Studies: Large Mouth Bass Growth 2006. Environmental Data Initiative.   [link](https://portal.edirepository.org/nis/mapbrowse?scope=knb-lter-ntl&identifier=267)  
 ```{r}
 fish <- read_csv("data/Gaeta_etal_CLC_data.csv")
+fish
 ```
 
 2. S. K. Morgan Ernest. 2003. Life history characteristics of placental non-volant mammals. Ecology 84:3402.   [link](http://esapubs.org/archive/ecol/E084/093/)  
 ```{r}
 mammals <- read_csv("data/mammal_lifehistories_v2.csv")
+mammals
 ```
 
 Let's rename some of the `mammals` variables.  
@@ -40,7 +43,7 @@ mammals <- rename(mammals, genus="Genus", wean_mass="wean mass", max_life= "max.
 
 Do you remember the easier way?
 ```{r}
-
+mammals <- clean_names(mammals)
 ```
 
 ## Review
@@ -49,7 +52,7 @@ In the warm-up, we practiced extracting observations of interest. For example, w
 glimpse(fish)
 ```
 
-Let's convert `lakeid` to a factor and have a look at which states are represented in the data.  
+Let's convert `lakeid` to a factor and have a look at which states are represented in the data.
 ```{r}
 fish$lakeid <- as.factor(fish$lakeid)
 levels(fish$lakeid)
@@ -57,7 +60,7 @@ levels(fish$lakeid)
 
 Now we can pull out any state of interest.  
 ```{r}
-
+filter(fish, lakeid=="LJ")
 ```
 
 ## Using `filter()` on multiple conditions
@@ -66,7 +69,8 @@ You can also use `filter()` to extract data based on multiple conditions. Below 
 filter(fish, lakeid == "AL" & length > 350)
 ```
 
-Notice that the `|` operator generates a different result.
+Notice that the `|` operator generates a different result. 
+takes one or the other variable not both
 ```{r}
 filter(fish, lakeid == "AL" | length > 350)
 ```
@@ -85,16 +89,24 @@ filter(fish, length > 400, (scalelength > 11 | radii_length_mm > 8))
 ## Practice  
 1.  From the `mammals` data, filter all members of the family Bovidae with a mass greater than 450000.
 ```{r}
-
+Bovidae <- filter(mammals, mass > 450000)
+Bovidae
 ```
 
 2. From the `mammals` data, build a data frame that compares `mass`, `gestation`, and `newborn` among the primate genera `Lophocebus`, `Erythrocebus`, and `Macaca`. Among these genera, which species has the smallest `newborn` mass?
 ```{r}
-
+mammals_mgn <- select(mammals, "genus", "order", "mass", "gestation", "newborn")
+mammals_mgn
 ```
 
 ```{r}
+mammals_mgn2 <-filter(mammals_mgn, order == "Primates")
+mammals_mgn2
+```
 
+```{r}
+mammals_mgn3 <- filter(mammals_mgn2, genus %in% c("Lophocebus", "Erythrocebus", "Macaca"))
+mammals_mgn3
 ```
 
 ## That's it! Let's take a break and then move on to part 2!  
