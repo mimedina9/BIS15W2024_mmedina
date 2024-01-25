@@ -89,23 +89,35 @@ table(homerange$trophic.guild)
 Have done for class on Jan 25
 **7. Make two new data frames, one which is restricted to carnivores and another that is restricted to herbivores.**  
 ```{r}
+homerange_cnv <- filter(homerange, trophic.guild == "carnivore")
+homerange_cnv
+```
 
+```{r}
+homerange_hbv <- filter(homerange, trophic.guild == "herbivore")
+homerange_hbv
 ```
 
 **8. Do herbivores or carnivores have, on average, a larger `mean.hra.m2`? Remove any NAs from the data.**  
 ```{r}
-
+mean(homerange_cnv$mean.hra.m2)
 ```
 
 ```{r}
-
+mean(homerange_hbv$mean.hra.m2)
 ```
+Herbivores have a larger 'mean.hra.m2'
 
 **9. Make a new dataframe `owls` that is limited to the mean mass, log10 mass, family, genus, and species of owls in the database. Which is the smallest owl? What is its common name? Do a little bit of searching online to see what you can learn about this species and provide a link below** 
 ```{r}
-
+owls <- select(homerange, "order", "common.name", "mean.mass.g", "log10.mass", "family", "genus", "species")
+owls
 ```
 
+```{r}
+filter(owls, order == "strigiformes")
+```
+The Eurasian pygmy owl is the smallest owl. 
 **10. As measured by the data, which bird species has the largest homerange? Show all of your work, please. Look this species up online and tell me about it!**.  
 ```{r}
 
