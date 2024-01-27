@@ -67,10 +67,6 @@ class(homerange$order)
 levels(homerange$taxon)
 ```
 
-```{r}
-levels(homerange$order)
-```
-
 **4. What taxa are represented in the `homerange` data frame? Make a new data frame `taxa` that is restricted to taxon, common name, class, order, family, genus, species.**  
 ```{r}
 taxa <-select(homerange, "taxon", "common.name", "class", "order", "family", "genus", "species")
@@ -118,10 +114,21 @@ owls
 filter(owls, order == "strigiformes")
 ```
 The Eurasian pygmy owl is the smallest owl. 
+https://www.owlpages.com/owls/species.php?s=1850 
 **10. As measured by the data, which bird species has the largest homerange? Show all of your work, please. Look this species up online and tell me about it!**.  
 ```{r}
-
+owls2 <- select(homerange, "taxon", "common.name", "species","mean.hra.m2", "log10.hra")
+owls2
 ```
 
+```{r}
+owls3 <- filter(owls2, taxon == "birds")
+```
+
+```{r}
+owls4 <- filter(owls3, mean.hra.m2 >= 200000000)
+owls4
+```
+The bird that has the largest homerange is the caracara. The caracara have long yellow legs and large hooked bluish bill, with black crowns and crests and red facial skin. 
 ## Push your final code to GitHub!
 Please be sure that you check the `keep md` file in the knit preferences.   
