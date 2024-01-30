@@ -42,14 +42,16 @@ mammals <- read_csv("data/mammal_lifehistories_v2.csv") %>% clean_names()
 Mutate allows us to create a new column from existing columns in a data frame. We are doing a small introduction here and will add some additional functions later. Let's convert the length variable from cm to millimeters and create a new variable called length_mm.  
 ```{r}
 fish %>% 
-  mutate(length_mm = length*10) %>% 
+  mutate(length_mm = length*10) %>%  #made a conversion 
   select(fish_id, length, length_mm)
 ```
 
 ## Practice
 1. Use `mutate()` to make a new column that is the half length of each fish: length_half = length/2. Select only fish_id, length, and length_half.
 ```{r}
-
+fish %>% 
+  mutate(length_half = length/2) %>% 
+  select("fish_id", "length", "length_half")
 ```
 
 ## `mutate_all()`
@@ -84,14 +86,17 @@ mammals %>%
 ```{r}
 mammals %>% 
   select(genus, species, newborn) %>%
-  mutate(newborn_new = ifelse(newborn == -999.00, NA, newborn))%>% 
+  mutate(newborn_new = ifelse(newborn == -999.00, NA, newborn))%>% #create new variable, look into variable and put NA for -999 but if it is anything else it will leave it alone 
   arrange(newborn)
 ```
 
 ## Practice
 1. We are interested in the family, genus, species and max life variables. Because the max life span for several mammals is unknown, the authors have use -999 in place of NA. Replace all of these values with NA in a new column titled `max_life_new`. Finally, sort the date in descending order by max_life_new. Which mammal has the oldest known life span?
 ```{r}
-
+mammals %>% 
+  select(family, genus, species, max_life) %>% 
+  mutate(max_life_new = ifelse(max_life == -999, NA, max_life)) %>% 
+  arrange(max_life)
 ```
 
 ## That's it! Let's take a break and then move on to part 2! 
