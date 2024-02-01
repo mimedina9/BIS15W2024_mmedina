@@ -100,24 +100,76 @@ good_guys %>%
 ```
 
 8. Among the bad guys, who are the male humans over 200 inches in height?
+```{r}
+bad_guys %>% 
+  filter(height > 200) %>% 
+  filter(race == "Human")
+```
 
 9. Are there more good guys or bad guys with green hair?  
+```{r}
+bad_guys %>% 
+  filter(hair_color == "Green")
+```
+
+```{r}
+good_guys %>% 
+  filter(hair_color == "Green")
+```
+There are more good guys with green hair than bad guys. 
 
 10. Let's explore who the really small superheros are. In the `superhero_info` data, which have a weight less than 50? Be sure to sort your results by weight lowest to highest.  
+```{r}
+superhero_info %>% 
+  filter(weight <= 50) %>% 
+  arrange(weight)
+
+```
 
 11. Let's make a new variable that is the ratio of height to weight. Call this variable `height_weight_ratio`.    
+```{r}
+superhero_info %>% 
+  mutate(height_weight_ratio = height/weight)
+```
 
 12. Who has the highest height to weight ratio?  
-
+```{r}
+superhero_info %>% 
+  mutate(height_weight_ratio = height/weight) %>% 
+  arrange(height_weight_ratio)
+```
+Groot has the highest height to weight ratio.
 ## `superhero_powers`
 Have a quick look at the `superhero_powers` data frame.  
+```{r}
+superhero_powers <- clean_names(superhero_powers)
+```
+
+```{r}
+glimpse(superhero_powers)
+```
+
 
 13. How many superheros have a combination of agility, stealth, super_strength, stamina?
-
+```{r}
+superhero_powers %>% 
+  select(hero_names, agility, stealth, super_strength, stamina) %>% 
+  filter(agility == "TRUE" & stealth == "TRUE" & super_strength == "TRUE" & stamina == "TRUE")
+```
+There are 40 superheros with this combination. 
 ## Your Favorite
 14. Pick your favorite superhero and let's see their powers!  
+```{r}
+superhero_powers %>% 
+  filter(hero_names == "Gamora") %>% 
+  select_if(all_vars(.=="TRUE"))
+```
 
 15. Can you find your hero in the superhero_info data? Show their info!  
+```{r}
+superhero_info %>% 
+  filter(name == "Gamora")
+```
 
 ## Push your final code to GitHub!
 Please be sure that you check the `keep md` file in the knit preferences.  
