@@ -33,24 +33,25 @@ library("skimr")
 For this lab, we will use the built-in data on mammal sleep patterns. From: _V. M. Savage and G. B. West. A quantitative, theoretical framework for understanding mammalian sleep. Proceedings of the National Academy of Sciences, 104 (3):1051-1056, 2007_.
 ```{r}
 ?msleep
-names(msleep)
 ```
 
 We will also use [palmerpenguins](https://allisonhorst.github.io/palmerpenguins/articles/intro.html) data in the second part of lab.
 ```{r}
 library("palmerpenguins")
 ```
-```{r}
-
-```
 
 ## dplyr Practice
 Let's do a bit more practice to make sure that we understand `select()`, `filter()`, and `mutate()`. Start by building a new data frame `msleep24` from the `msleep` data that: contains the `name` and `vore` variables along with a new column called `sleep_total_24` which is the amount of time a species sleeps expressed as a proportion of a 24-hour day. Restrict the `sleep_total_24` values to less than or equal to 0.3. Arrange the output in descending order.  
 ```{r}
+names(msleep)
+msleep <- msleep #stores msleep as a new object, but this isn't necessary
+```
+
+```{r}
 msleep24 <- msleep %>% 
-  select("name", "vore", "sleep_total") %>% 
-  mutate(sleep_total_24 = sleep_total/24 ) %>% 
-  filter(sleep_total_24 <= 0.3) %>% 
+  mutate(sleep_total_24=sleep_total/24) %>% 
+  select(name, vore, sleep_total_24, sleep_total) %>% 
+  filter(sleep_total_24<=0.3) %>% 
   arrange(desc(sleep_total_24))
 msleep24
 ```
@@ -89,32 +90,29 @@ large
 mean(large$sleep_total)
 ```
 
-We can accomplish the same task using the `summarize()` function to make things cleaner.
+We can accomplish the same task using the `summarize()` function to make things cleaner.  
+
+Large mammals
 ```{r}
 msleep %>% 
   filter(bodywt>200) %>% 
   summarize(mean_sleep_lg=mean(sleep_total))
 ```
 
-```{r}
-names(msleep)
-```
-
-
+Small mammals
 ```{r}
 msleep %>% 
-  filter(bodywt<10) %>% 
+  filter(bodywt<10)%>% 
   summarize(mean_sleep_sm=mean(sleep_total))
 ```
-
 
 You can also combine functions to make useful summaries for multiple variables.
 ```{r}
 msleep %>% 
   filter(bodywt>200) %>% 
-  summarize(mean_sleep_lg=mean(sleep_total), 
-            min_sleep_lg=min(sleep_total), 
-            max_sleep_lg=max(sleep_total), 
+  summarize(mean_sleep_lg=mean(sleep_total),
+            min_sleep_lg=min(sleep_total),
+            max_sleep_lg=max(sleep_total),
             sd_sleep_lg=sd(sleep_total),
             total=n())
 ```
@@ -124,8 +122,8 @@ msleep %>%
 ```{r}
 msleep %>% 
   filter(order=="Primates") %>% 
-  summarize(mean_bodywt=mean(bodywt), 
-            min_bodywt=min(bodywt), 
+  summarize(mean_bodywt=mean(bodywt),
+            min_bodywt=min(bodywt),
             max_bodywt=max(bodywt),
             total=n())
 ```
@@ -141,7 +139,8 @@ msleep %>%
 n_distinct() is a very handy way of cleanly presenting the number of distinct observations. Here we show the number of distinct genera over 100 in body weight.
 ```{r}
 msleep %>% 
-  summarize(n_genera=n_distinct(bodywt))
+  filter(bodywt > 100) %>% 
+  summarize(n_genera=n_distinct(genus))
 ```
 
 There are many other useful summary statistics, depending on your needs: sd(), min(), max(), median(), sum(), n() (returns the length of a column), first() (returns first value in a column), last() (returns last value in a column) and n_distinct() (number of distinct values in a column).
@@ -153,17 +152,19 @@ msleep %>%
   summarize(n_genera=n_distinct(genus))
 ```
 
+Here is another option.
 ```{r}
-glimpse(msleep)
+msleep %>% 
+  tabyl(genus)
 ```
 
 2. What are the min, max, and mean `sleep_total` for all of the mammals? Be sure to include the total n.
 ```{r}
-msleep %>% 
-  summarize(mean_sleep_total=mean(sleep_total), 
-          min_sleep_total=min(sleep_total),
-          max_sleep_total=max(sleep_total),
-          total=n())
+msleep%>% 
+  summarize(mean_sleep_total=mean(sleep_total),
+            minsleep_total=min(sleep_total),
+            max_sleep_total=max(sleep_total),
+            total=n())
 ```
 
 ## `group_by()`
@@ -182,29 +183,28 @@ msleep %>%
 ```{r}
 msleep %>% 
   group_by(order) %>% 
-  summarize(mean_brainwt=mean(brainwt)) %>% 
+  summarize(mean_brain_wt=mean(brainwt))
 ```
 
 2. What does `NA` mean? How are NA's being treated by the summarize function?
 ```{r}
-msleep %>%
-  group_by(order) %>% 
- summarize(mean_brain_wt=mean(brainwt, na.rm=T))
-  
+msleep %>% 
+  filter(order=="Carnivora") %>% 
+  select(order, genus, brainwt)
 ```
 
 3. Try running the code again, but this time add `na.rm=TRUE`. What is the problem with Cetacea? Compare this to Carnivora. 
+NaN is a special value that is returned when a mathematical operation is undefined. In this case, the mean of a column with NA's is undefined.  
 ```{r}
-msleep %>%
+msleep %>% 
   group_by(order) %>% 
- summarize(mean_brain_wt=mean(brainwt, na.rm=T))
+  summarize(mean_brain_wt=mean(brainwt, na.rm=T))
 ```
 
 ```{r}
 msleep %>% 
-  filter(order== "Cetacea") %>% 
+  filter(order=="Cetacea") %>% 
   select(order, genus, brainwt)
-
 ```
 
 ## That's it! Let's take a break and then move on to part 2! 
