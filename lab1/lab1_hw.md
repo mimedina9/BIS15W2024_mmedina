@@ -1,5 +1,5 @@
 ---
-title: "Lab 1 Homework"
+title: "hw1"
 author: "Maya Medina"
 date: "2024-01-15"
 output:
