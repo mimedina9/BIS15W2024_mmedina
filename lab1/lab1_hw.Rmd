@@ -1,5 +1,5 @@
 ---
-title: "Lab 1 Homework"
+title: "Homework 1"
 author: "Maya Medina"
 date: "`r Sys.Date()`"
 output:

@@ -1,5 +1,5 @@
 ---
-title: "hw7"
+title: "hw6"
 author: "Maya Medina"
 date: "2024-02-12"
 output:
