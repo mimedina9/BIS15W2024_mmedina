@@ -11,9 +11,9 @@
 
 <meta name="author" content="Maya Medina" />
 
-<meta name="date" content="2024-01-26" />
+<meta name="date" content="2024-02-22" />
 
-<title>Lab 4 Homework</title>
+<title>Homework 5</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -374,337 +374,382 @@ display: none;
 
 
 
-<h1 class="title toc-ignore">Lab 4 Homework</h1>
+<h1 class="title toc-ignore">Homework 5</h1>
 <h4 class="author">Maya Medina</h4>
-<h4 class="date">2024-01-26</h4>
+<h4 class="date">2024-02-22</h4>
 
 </div>
 
 
-<div id="instructions" class="section level2">
-<h2>Instructions</h2>
-<p>Answer the following questions and complete the exercises in
-RMarkdown. Please embed all of your code and push your final work to
-your repository. Your final lab report should be organized, clean, and
-run free from errors. Remember, you must remove the <code>#</code> for
-the included code chunks to run. Be sure to add your name to the author
-header above.</p>
-<p>Make sure to use the formatting conventions of RMarkdown to make your
-report neat and clean!</p>
+<div id="learning-goals" class="section level2">
+<h2>Learning Goals</h2>
+<p><em>At the end of this exercise, you will be able to:</em><br />
+1. Use pipes to connect functions in dplyr.<br />
+2. Use <code>arrange()</code> to order dplyr outputs.<br />
+3. Use <code>mutate()</code> to add columns in a dataframe.<br />
+4. Use <code>mutate()</code> and <code>if_else()</code> to replace
+values in a dataframe.</p>
+</div>
+<div id="review" class="section level2">
+<h2>Review</h2>
+<p>At this point, you should be comfortable using the
+<code>select()</code> and <code>filter()</code> functions of
+<code>dplyr</code>. If you need extra help, please <a href="mailto:%20jmledford@ucdavis.edu">email me</a>.</p>
 </div>
 <div id="load-the-tidyverse" class="section level2">
 <h2>Load the tidyverse</h2>
-<pre class="r"><code>library(tidyverse)</code></pre>
+<pre class="r"><code>library(&quot;tidyverse&quot;)</code></pre>
 </div>
-<div id="data" class="section level2">
-<h2>Data</h2>
-<p>For the homework, we will use data about vertebrate home range sizes.
-The data are in the class folder, but the reference is below.</p>
-<p><strong>Database of vertebrate home range sizes.</strong><br />
-Reference: Tamburello N, Cote IM, Dulvy NK (2015) Energy and the scaling
-of animal space use. The American Naturalist 186(2):196-211. <a href="http://dx.doi.org/10.1086/682070" class="uri">http://dx.doi.org/10.1086/682070</a>.<br />
-Data: <a href="http://datadryad.org/resource/doi:10.5061/dryad.q5j65/1" class="uri">http://datadryad.org/resource/doi:10.5061/dryad.q5j65/1</a></p>
-<p><strong>1. Load the data into a new object called
-<code>homerange</code>.</strong></p>
-<pre class="r"><code>homerange &lt;- readr::read_csv(&quot;data/Tamburelloetal_HomeRangeDatabase.csv&quot;)</code></pre>
-<pre><code>## Rows: 569 Columns: 24
+<div id="load-the-data" class="section level2">
+<h2>Load the data</h2>
+<p>For this lab, we will use the following two datasets:</p>
+<ol style="list-style-type: decimal">
+<li>Gaeta J., G. Sass, S. Carpenter. 2012. Biocomplexity at North
+Temperate Lakes LTER: Coordinated Field Studies: Large Mouth Bass Growth
+2006. Environmental Data Initiative. <a href="https://portal.edirepository.org/nis/mapbrowse?scope=knb-lter-ntl&amp;identifier=267">link</a></li>
+</ol>
+<pre class="r"><code>fish &lt;- readr::read_csv(&quot;data/Gaeta_etal_CLC_data.csv&quot;)</code></pre>
+<pre><code>## Rows: 4033 Columns: 6
 ## ── Column specification ────────────────────────────────────────────────────────
 ## Delimiter: &quot;,&quot;
-## chr (16): taxon, common.name, class, order, family, genus, species, primarym...
-## dbl  (8): mean.mass.g, log10.mass, mean.hra.m2, log10.hra, dimension, preyma...
+## chr (2): lakeid, annnumber
+## dbl (4): fish_id, length, radii_length_mm, scalelength
 ## 
 ## ℹ Use `spec()` to retrieve the full column specification for this data.
 ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
-<pre class="r"><code>homerange</code></pre>
-<pre><code>## # A tibble: 569 × 24
-##    taxon        common.name class order family genus species primarymethod N    
-##    &lt;chr&gt;        &lt;chr&gt;       &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt;         &lt;chr&gt;
-##  1 lake fishes  american e… acti… angu… angui… angu… rostra… telemetry     16   
-##  2 river fishes blacktail … acti… cypr… catos… moxo… poecil… mark-recaptu… &lt;NA&gt; 
-##  3 river fishes central st… acti… cypr… cypri… camp… anomal… mark-recaptu… 20   
-##  4 river fishes rosyside d… acti… cypr… cypri… clin… fundul… mark-recaptu… 26   
-##  5 river fishes longnose d… acti… cypr… cypri… rhin… catara… mark-recaptu… 17   
-##  6 river fishes muskellunge acti… esoc… esoci… esox  masqui… telemetry     5    
-##  7 marine fish… pollack     acti… gadi… gadid… poll… pollac… telemetry     2    
-##  8 marine fish… saithe      acti… gadi… gadid… poll… virens  telemetry     2    
-##  9 marine fish… lined surg… acti… perc… acant… acan… lineat… direct obser… &lt;NA&gt; 
-## 10 marine fish… orangespin… acti… perc… acant… naso  litura… telemetry     8    
-## # ℹ 559 more rows
-## # ℹ 15 more variables: mean.mass.g &lt;dbl&gt;, log10.mass &lt;dbl&gt;,
-## #   alternative.mass.reference &lt;chr&gt;, mean.hra.m2 &lt;dbl&gt;, log10.hra &lt;dbl&gt;,
-## #   hra.reference &lt;chr&gt;, realm &lt;chr&gt;, thermoregulation &lt;chr&gt;, locomotion &lt;chr&gt;,
-## #   trophic.guild &lt;chr&gt;, dimension &lt;dbl&gt;, preymass &lt;dbl&gt;, log10.preymass &lt;dbl&gt;,
-## #   PPMR &lt;dbl&gt;, prey.size.reference &lt;chr&gt;</code></pre>
-<p><strong>2. Explore the data. Show the dimensions, column names,
-classes for each variable, and a statistical summary. Keep these as
-separate code chunks.</strong></p>
-<pre class="r"><code>dim(homerange)</code></pre>
-<pre><code>## [1] 569  24</code></pre>
-<pre class="r"><code>names(homerange)</code></pre>
-<pre><code>##  [1] &quot;taxon&quot;                      &quot;common.name&quot;               
-##  [3] &quot;class&quot;                      &quot;order&quot;                     
-##  [5] &quot;family&quot;                     &quot;genus&quot;                     
-##  [7] &quot;species&quot;                    &quot;primarymethod&quot;             
-##  [9] &quot;N&quot;                          &quot;mean.mass.g&quot;               
-## [11] &quot;log10.mass&quot;                 &quot;alternative.mass.reference&quot;
-## [13] &quot;mean.hra.m2&quot;                &quot;log10.hra&quot;                 
-## [15] &quot;hra.reference&quot;              &quot;realm&quot;                     
-## [17] &quot;thermoregulation&quot;           &quot;locomotion&quot;                
-## [19] &quot;trophic.guild&quot;              &quot;dimension&quot;                 
-## [21] &quot;preymass&quot;                   &quot;log10.preymass&quot;            
-## [23] &quot;PPMR&quot;                       &quot;prey.size.reference&quot;</code></pre>
-<pre class="r"><code>glimpse(homerange)</code></pre>
-<pre><code>## Rows: 569
-## Columns: 24
-## $ taxon                      &lt;chr&gt; &quot;lake fishes&quot;, &quot;river fishes&quot;, &quot;river fishe…
-## $ common.name                &lt;chr&gt; &quot;american eel&quot;, &quot;blacktail redhorse&quot;, &quot;cent…
-## $ class                      &lt;chr&gt; &quot;actinopterygii&quot;, &quot;actinopterygii&quot;, &quot;actino…
-## $ order                      &lt;chr&gt; &quot;anguilliformes&quot;, &quot;cypriniformes&quot;, &quot;cyprini…
-## $ family                     &lt;chr&gt; &quot;anguillidae&quot;, &quot;catostomidae&quot;, &quot;cyprinidae&quot;…
-## $ genus                      &lt;chr&gt; &quot;anguilla&quot;, &quot;moxostoma&quot;, &quot;campostoma&quot;, &quot;cli…
-## $ species                    &lt;chr&gt; &quot;rostrata&quot;, &quot;poecilura&quot;, &quot;anomalum&quot;, &quot;fundu…
-## $ primarymethod              &lt;chr&gt; &quot;telemetry&quot;, &quot;mark-recapture&quot;, &quot;mark-recapt…
-## $ N                          &lt;chr&gt; &quot;16&quot;, NA, &quot;20&quot;, &quot;26&quot;, &quot;17&quot;, &quot;5&quot;, &quot;2&quot;, &quot;2&quot;, …
-## $ mean.mass.g                &lt;dbl&gt; 887.00, 562.00, 34.00, 4.00, 4.00, 3525.00,…
-## $ log10.mass                 &lt;dbl&gt; 2.9479236, 2.7497363, 1.5314789, 0.6020600,…
-## $ alternative.mass.reference &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
-## $ mean.hra.m2                &lt;dbl&gt; 282750.00, 282.10, 116.11, 125.50, 87.10, 3…
-## $ log10.hra                  &lt;dbl&gt; 5.4514026, 2.4504031, 2.0648696, 2.0986437,…
-## $ hra.reference              &lt;chr&gt; &quot;Minns, C. K. 1995. Allometry of home range…
-## $ realm                      &lt;chr&gt; &quot;aquatic&quot;, &quot;aquatic&quot;, &quot;aquatic&quot;, &quot;aquatic&quot;,…
-## $ thermoregulation           &lt;chr&gt; &quot;ectotherm&quot;, &quot;ectotherm&quot;, &quot;ectotherm&quot;, &quot;ect…
-## $ locomotion                 &lt;chr&gt; &quot;swimming&quot;, &quot;swimming&quot;, &quot;swimming&quot;, &quot;swimmi…
-## $ trophic.guild              &lt;chr&gt; &quot;carnivore&quot;, &quot;carnivore&quot;, &quot;carnivore&quot;, &quot;car…
-## $ dimension                  &lt;dbl&gt; 3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3…
-## $ preymass                   &lt;dbl&gt; NA, NA, NA, NA, NA, NA, 1.39, NA, NA, NA, N…
-## $ log10.preymass             &lt;dbl&gt; NA, NA, NA, NA, NA, NA, 0.1430148, NA, NA, …
-## $ PPMR                       &lt;dbl&gt; NA, NA, NA, NA, NA, NA, 530, NA, NA, NA, NA…
-## $ prey.size.reference        &lt;chr&gt; NA, NA, NA, NA, NA, NA, &quot;Brose U, et al. 20…</code></pre>
-<pre class="r"><code>summary(homerange)</code></pre>
-<pre><code>##     taxon           common.name           class              order          
-##  Length:569         Length:569         Length:569         Length:569        
-##  Class :character   Class :character   Class :character   Class :character  
-##  Mode  :character   Mode  :character   Mode  :character   Mode  :character  
-##                                                                             
-##                                                                             
-##                                                                             
-##                                                                             
-##     family             genus             species          primarymethod     
-##  Length:569         Length:569         Length:569         Length:569        
-##  Class :character   Class :character   Class :character   Class :character  
-##  Mode  :character   Mode  :character   Mode  :character   Mode  :character  
-##                                                                             
-##                                                                             
-##                                                                             
-##                                                                             
-##       N              mean.mass.g        log10.mass     
-##  Length:569         Min.   :      0   Min.   :-0.6576  
-##  Class :character   1st Qu.:     50   1st Qu.: 1.6990  
-##  Mode  :character   Median :    330   Median : 2.5185  
-##                     Mean   :  34602   Mean   : 2.5947  
-##                     3rd Qu.:   2150   3rd Qu.: 3.3324  
-##                     Max.   :4000000   Max.   : 6.6021  
-##                                                        
-##  alternative.mass.reference  mean.hra.m2          log10.hra     
-##  Length:569                 Min.   :0.000e+00   Min.   :-1.523  
-##  Class :character           1st Qu.:4.500e+03   1st Qu.: 3.653  
-##  Mode  :character           Median :3.934e+04   Median : 4.595  
-##                             Mean   :2.146e+07   Mean   : 4.709  
-##                             3rd Qu.:1.038e+06   3rd Qu.: 6.016  
-##                             Max.   :3.551e+09   Max.   : 9.550  
-##                                                                 
-##  hra.reference         realm           thermoregulation    locomotion       
-##  Length:569         Length:569         Length:569         Length:569        
-##  Class :character   Class :character   Class :character   Class :character  
-##  Mode  :character   Mode  :character   Mode  :character   Mode  :character  
-##                                                                             
-##                                                                             
-##                                                                             
-##                                                                             
-##  trophic.guild        dimension        preymass         log10.preymass   
-##  Length:569         Min.   :2.000   Min.   :     0.67   Min.   :-0.1739  
-##  Class :character   1st Qu.:2.000   1st Qu.:    20.02   1st Qu.: 1.3014  
-##  Mode  :character   Median :2.000   Median :    53.75   Median : 1.7304  
-##                     Mean   :2.218   Mean   :  3989.88   Mean   : 2.0188  
-##                     3rd Qu.:2.000   3rd Qu.:   363.35   3rd Qu.: 2.5603  
-##                     Max.   :3.000   Max.   :130233.20   Max.   : 5.1147  
-##                                     NA&#39;s   :502         NA&#39;s   :502      
-##       PPMR         prey.size.reference
-##  Min.   :  0.380   Length:569         
-##  1st Qu.:  3.315   Class :character   
-##  Median :  7.190   Mode  :character   
-##  Mean   : 31.752                      
-##  3rd Qu.: 15.966                      
-##  Max.   :530.000                      
-##  NA&#39;s   :502</code></pre>
-<p><strong>3. Change the class of the variables <code>taxon</code> and
-<code>order</code> to factors and display their levels.</strong></p>
-<pre class="r"><code>homerange$taxon &lt;-as.factor(homerange$taxon)
-class(homerange$taxon)</code></pre>
-<pre><code>## [1] &quot;factor&quot;</code></pre>
-<pre class="r"><code>homerange$order &lt;-as.factor(homerange$order)
-class(homerange$order)</code></pre>
-<pre><code>## [1] &quot;factor&quot;</code></pre>
-<pre class="r"><code>levels(homerange$taxon)</code></pre>
-<pre><code>## [1] &quot;birds&quot;         &quot;lake fishes&quot;   &quot;lizards&quot;       &quot;mammals&quot;      
-## [5] &quot;marine fishes&quot; &quot;river fishes&quot;  &quot;snakes&quot;        &quot;tortoises&quot;    
-## [9] &quot;turtles&quot;</code></pre>
-<p><strong>4. What taxa are represented in the <code>homerange</code>
-data frame? Make a new data frame <code>taxa</code> that is restricted
-to taxon, common name, class, order, family, genus,
-species.</strong></p>
-<pre class="r"><code>taxa &lt;-select(homerange, &quot;taxon&quot;, &quot;common.name&quot;, &quot;class&quot;, &quot;order&quot;, &quot;family&quot;, &quot;genus&quot;, &quot;species&quot;)
-taxa</code></pre>
-<pre><code>## # A tibble: 569 × 7
-##    taxon         common.name             class        order family genus species
-##    &lt;fct&gt;         &lt;chr&gt;                   &lt;chr&gt;        &lt;fct&gt; &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt;  
-##  1 lake fishes   american eel            actinoptery… angu… angui… angu… rostra…
-##  2 river fishes  blacktail redhorse      actinoptery… cypr… catos… moxo… poecil…
-##  3 river fishes  central stoneroller     actinoptery… cypr… cypri… camp… anomal…
-##  4 river fishes  rosyside dace           actinoptery… cypr… cypri… clin… fundul…
-##  5 river fishes  longnose dace           actinoptery… cypr… cypri… rhin… catara…
-##  6 river fishes  muskellunge             actinoptery… esoc… esoci… esox  masqui…
-##  7 marine fishes pollack                 actinoptery… gadi… gadid… poll… pollac…
-##  8 marine fishes saithe                  actinoptery… gadi… gadid… poll… virens 
-##  9 marine fishes lined surgeonfish       actinoptery… perc… acant… acan… lineat…
-## 10 marine fishes orangespine unicornfish actinoptery… perc… acant… naso  litura…
-## # ℹ 559 more rows</code></pre>
-<p><strong>5. The variable <code>taxon</code> identifies the common name
-groups of the species represented in <code>homerange</code>. Make a
-table the shows the counts for each of these
-<code>taxon</code>.</strong></p>
-<pre class="r"><code>table(homerange$taxon)</code></pre>
-<pre><code>## 
-##         birds   lake fishes       lizards       mammals marine fishes 
-##           140             9            11           238            90 
-##  river fishes        snakes     tortoises       turtles 
-##            14            41            12            14</code></pre>
-<p><strong>6. The species in <code>homerange</code> are also classified
-into trophic guilds. How many species are represented in each trophic
-guild.</strong></p>
-<pre class="r"><code>table(homerange$trophic.guild)</code></pre>
-<pre><code>## 
-## carnivore herbivore 
-##       342       227</code></pre>
-<p>Have done for class on Jan 25 <strong>7. Make two new data frames,
-one which is restricted to carnivores and another that is restricted to
-herbivores.</strong></p>
-<pre class="r"><code>homerange_cnv &lt;- filter(homerange, trophic.guild == &quot;carnivore&quot;)
-homerange_cnv</code></pre>
-<pre><code>## # A tibble: 342 × 24
-##    taxon        common.name class order family genus species primarymethod N    
-##    &lt;fct&gt;        &lt;chr&gt;       &lt;chr&gt; &lt;fct&gt; &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt;         &lt;chr&gt;
-##  1 lake fishes  american e… acti… angu… angui… angu… rostra… telemetry     16   
-##  2 river fishes blacktail … acti… cypr… catos… moxo… poecil… mark-recaptu… &lt;NA&gt; 
-##  3 river fishes central st… acti… cypr… cypri… camp… anomal… mark-recaptu… 20   
-##  4 river fishes rosyside d… acti… cypr… cypri… clin… fundul… mark-recaptu… 26   
-##  5 river fishes longnose d… acti… cypr… cypri… rhin… catara… mark-recaptu… 17   
-##  6 river fishes muskellunge acti… esoc… esoci… esox  masqui… telemetry     5    
-##  7 marine fish… pollack     acti… gadi… gadid… poll… pollac… telemetry     2    
-##  8 marine fish… saithe      acti… gadi… gadid… poll… virens  telemetry     2    
-##  9 marine fish… giant trev… acti… perc… caran… cara… ignobi… telemetry     4    
-## 10 lake fishes  rock bass   acti… perc… centr… ambl… rupest… mark-recaptu… 16   
-## # ℹ 332 more rows
-## # ℹ 15 more variables: mean.mass.g &lt;dbl&gt;, log10.mass &lt;dbl&gt;,
-## #   alternative.mass.reference &lt;chr&gt;, mean.hra.m2 &lt;dbl&gt;, log10.hra &lt;dbl&gt;,
-## #   hra.reference &lt;chr&gt;, realm &lt;chr&gt;, thermoregulation &lt;chr&gt;, locomotion &lt;chr&gt;,
-## #   trophic.guild &lt;chr&gt;, dimension &lt;dbl&gt;, preymass &lt;dbl&gt;, log10.preymass &lt;dbl&gt;,
-## #   PPMR &lt;dbl&gt;, prey.size.reference &lt;chr&gt;</code></pre>
-<pre class="r"><code>homerange_hbv &lt;- filter(homerange, trophic.guild == &quot;herbivore&quot;)
-homerange_hbv</code></pre>
-<pre><code>## # A tibble: 227 × 24
-##    taxon        common.name class order family genus species primarymethod N    
-##    &lt;fct&gt;        &lt;chr&gt;       &lt;chr&gt; &lt;fct&gt; &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt;         &lt;chr&gt;
-##  1 marine fish… lined surg… acti… perc… acant… acan… lineat… direct obser… &lt;NA&gt; 
-##  2 marine fish… orangespin… acti… perc… acant… naso  litura… telemetry     8    
-##  3 marine fish… bluespine … acti… perc… acant… naso  unicor… telemetry     7    
-##  4 marine fish… redlip ble… acti… perc… blenn… ophi… atlant… direct obser… 20   
-##  5 marine fish… bermuda ch… acti… perc… kypho… kyph… sectat… telemetry     11   
-##  6 marine fish… cherubfish  acti… perc… pomac… cent… argi    direct obser… &lt;NA&gt; 
-##  7 marine fish… damselfish  acti… perc… pomac… chro… chromis direct obser… &lt;NA&gt; 
-##  8 marine fish… twinspot d… acti… perc… pomac… chry… biocel… direct obser… 18   
-##  9 marine fish… wards dams… acti… perc… pomac… poma… wardi   direct obser… &lt;NA&gt; 
-## 10 marine fish… australian… acti… perc… pomac… steg… apical… direct obser… &lt;NA&gt; 
-## # ℹ 217 more rows
-## # ℹ 15 more variables: mean.mass.g &lt;dbl&gt;, log10.mass &lt;dbl&gt;,
-## #   alternative.mass.reference &lt;chr&gt;, mean.hra.m2 &lt;dbl&gt;, log10.hra &lt;dbl&gt;,
-## #   hra.reference &lt;chr&gt;, realm &lt;chr&gt;, thermoregulation &lt;chr&gt;, locomotion &lt;chr&gt;,
-## #   trophic.guild &lt;chr&gt;, dimension &lt;dbl&gt;, preymass &lt;dbl&gt;, log10.preymass &lt;dbl&gt;,
-## #   PPMR &lt;dbl&gt;, prey.size.reference &lt;chr&gt;</code></pre>
-<p><strong>8. Do herbivores or carnivores have, on average, a larger
-<code>mean.hra.m2</code>? Remove any NAs from the data.</strong></p>
-<pre class="r"><code>mean(homerange_cnv$mean.hra.m2)</code></pre>
-<pre><code>## [1] 13039918</code></pre>
-<pre class="r"><code>mean(homerange_hbv$mean.hra.m2)</code></pre>
-<pre><code>## [1] 34137012</code></pre>
-<p>Herbivores have a larger ‘mean.hra.m2’</p>
-<p><strong>9. Make a new dataframe <code>owls</code> that is limited to
-the mean mass, log10 mass, family, genus, and species of owls in the
-database. Which is the smallest owl? What is its common name? Do a
-little bit of searching online to see what you can learn about this
-species and provide a link below</strong></p>
-<pre class="r"><code>owls &lt;- select(homerange, &quot;order&quot;, &quot;common.name&quot;, &quot;mean.mass.g&quot;, &quot;log10.mass&quot;, &quot;family&quot;, &quot;genus&quot;, &quot;species&quot;)
-owls</code></pre>
-<pre><code>## # A tibble: 569 × 7
-##    order          common.name        mean.mass.g log10.mass family genus species
-##    &lt;fct&gt;          &lt;chr&gt;                    &lt;dbl&gt;      &lt;dbl&gt; &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt;  
-##  1 anguilliformes american eel              887       2.95  angui… angu… rostra…
-##  2 cypriniformes  blacktail redhorse        562       2.75  catos… moxo… poecil…
-##  3 cypriniformes  central stoneroll…         34       1.53  cypri… camp… anomal…
-##  4 cypriniformes  rosyside dace               4       0.602 cypri… clin… fundul…
-##  5 cypriniformes  longnose dace               4       0.602 cypri… rhin… catara…
-##  6 esociformes    muskellunge              3525       3.55  esoci… esox  masqui…
-##  7 gadiformes     pollack                   737.      2.87  gadid… poll… pollac…
-##  8 gadiformes     saithe                    449.      2.65  gadid… poll… virens 
-##  9 perciformes    lined surgeonfish         109.      2.04  acant… acan… lineat…
-## 10 perciformes    orangespine unico…        772.      2.89  acant… naso  litura…
-## # ℹ 559 more rows</code></pre>
-<pre class="r"><code>filter(owls, order == &quot;strigiformes&quot;)</code></pre>
-<pre><code>## # A tibble: 9 × 7
-##   order        common.name        mean.mass.g log10.mass family    genus species
-##   &lt;fct&gt;        &lt;chr&gt;                    &lt;dbl&gt;      &lt;dbl&gt; &lt;chr&gt;     &lt;chr&gt; &lt;chr&gt;  
-## 1 strigiformes boreal owl               119         2.08 strigidae aego… funere…
-## 2 strigiformes long-eared owl           252         2.40 strigidae asio  otus   
-## 3 strigiformes little owl               156.        2.19 strigidae athe… noctua 
-## 4 strigiformes Eurasian eagle-owl      2191         3.34 strigidae bubo  bubo   
-## 5 strigiformes great horned owl        1510         3.18 strigidae bubo  virgin…
-## 6 strigiformes Eurasian pygmy owl        61.3       1.79 strigidae glau… passer…
-## 7 strigiformes snowy owl               1920         3.28 strigidae nyct… scandi…
-## 8 strigiformes tawny owl                519         2.72 strigidae strix aluco  
-## 9 strigiformes barn owl                 285         2.45 tytonidae tyto  alba</code></pre>
-<p>The Eurasian pygmy owl is the smallest owl. <a href="https://www.owlpages.com/owls/species.php?s=1850" class="uri">https://www.owlpages.com/owls/species.php?s=1850</a>
-<strong>10. As measured by the data, which bird species has the largest
-homerange? Show all of your work, please. Look this species up online
-and tell me about it!</strong>.</p>
-<pre class="r"><code>owls2 &lt;- select(homerange, &quot;taxon&quot;, &quot;common.name&quot;, &quot;species&quot;,&quot;mean.hra.m2&quot;, &quot;log10.hra&quot;)
-owls2</code></pre>
-<pre><code>## # A tibble: 569 × 5
-##    taxon         common.name             species     mean.hra.m2 log10.hra
-##    &lt;fct&gt;         &lt;chr&gt;                   &lt;chr&gt;             &lt;dbl&gt;     &lt;dbl&gt;
-##  1 lake fishes   american eel            rostrata       282750        5.45
-##  2 river fishes  blacktail redhorse      poecilura         282.       2.45
-##  3 river fishes  central stoneroller     anomalum          116.       2.06
-##  4 river fishes  rosyside dace           funduloides       126.       2.10
-##  5 river fishes  longnose dace           cataractae         87.1      1.94
-##  6 river fishes  muskellunge             masquinongy     39344.       4.59
-##  7 marine fishes pollack                 pollachius       9056.       3.96
-##  8 marine fishes saithe                  virens          44516.       4.65
-##  9 marine fishes lined surgeonfish       lineatus           11.1      1.05
-## 10 marine fishes orangespine unicornfish lituratus       32093.       4.51
-## # ℹ 559 more rows</code></pre>
-<pre class="r"><code>owls3 &lt;- filter(owls2, taxon == &quot;birds&quot;)</code></pre>
-<pre class="r"><code>owls4 &lt;- filter(owls3, mean.hra.m2 &gt;= 200000000)
-owls4</code></pre>
-<pre><code>## # A tibble: 2 × 5
-##   taxon common.name       species  mean.hra.m2 log10.hra
-##   &lt;fct&gt; &lt;chr&gt;             &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;
-## 1 birds Montagu&#39;s harrier pygargus   200980000      8.30
-## 2 birds caracara          cheriway   241000000      8.38</code></pre>
-<p>The bird that has the largest homerange is the caracara. The caracara
-have long yellow legs and large hooked bluish bill, with black crowns
-and crests and red facial skin. ## Push your final code to GitHub!
-Please be sure that you check the <code>keep md</code> file in the knit
-preferences.</p>
+<ol start="2" style="list-style-type: decimal">
+<li>S. K. Morgan Ernest. 2003. Life history characteristics of placental
+non-volant mammals. Ecology 84:3402. <a href="http://esapubs.org/archive/ecol/E084/093/">link</a></li>
+</ol>
+<pre class="r"><code>mammals &lt;- readr::read_csv(&quot;data/mammal_lifehistories_v2.csv&quot;)</code></pre>
+<pre><code>## Rows: 1440 Columns: 13
+## ── Column specification ────────────────────────────────────────────────────────
+## Delimiter: &quot;,&quot;
+## chr (4): order, family, Genus, species
+## dbl (9): mass, gestation, newborn, weaning, wean mass, AFR, max. life, litte...
+## 
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<p>Let’s rename some of the <code>mammals</code> variables.</p>
+<pre class="r"><code>mammals &lt;- rename(mammals, genus=&quot;Genus&quot;, wean_mass=&quot;wean mass&quot;, max_life= &quot;max. life&quot;, litter_size=&quot;litter size&quot;, litters_per_year=&quot;litters/year&quot;)</code></pre>
+</div>
+<div id="pipes" class="section level2">
+<h2>Pipes <code>%&gt;%</code></h2>
+<p>In order to start combining <code>select()</code>,
+<code>filter()</code>, and other functions efficiently, we need to learn
+pipes. Pipes feed the output from one function into the input of another
+function. This helps us keep our code sequential and clean.</p>
+<p>In this example, we use a pipe to select only <code>lakeid</code> and
+<code>scalelength</code> then filter that output only for lakes “AL”.
+Notice that we only need to call the data one time.</p>
+<pre class="r"><code>select(fish, lakeid, scalelength)</code></pre>
+<pre><code>## # A tibble: 4,033 × 2
+##    lakeid scalelength
+##    &lt;chr&gt;        &lt;dbl&gt;
+##  1 AL            2.70
+##  2 AL            2.70
+##  3 AL            2.70
+##  4 AL            3.02
+##  5 AL            3.02
+##  6 AL            3.02
+##  7 AL            3.02
+##  8 AL            3.34
+##  9 AL            3.34
+## 10 AL            3.34
+## # ℹ 4,023 more rows</code></pre>
+<pre class="r"><code>fish %&gt;% 
+  select(lakeid, scalelength) %&gt;% 
+  filter(lakeid == &quot;AL&quot;)</code></pre>
+<pre><code>## # A tibble: 383 × 2
+##    lakeid scalelength
+##    &lt;chr&gt;        &lt;dbl&gt;
+##  1 AL            2.70
+##  2 AL            2.70
+##  3 AL            2.70
+##  4 AL            3.02
+##  5 AL            3.02
+##  6 AL            3.02
+##  7 AL            3.02
+##  8 AL            3.34
+##  9 AL            3.34
+## 10 AL            3.34
+## # ℹ 373 more rows</code></pre>
+<pre class="r"><code>fish %&gt;%
+  select(lakeid, scalelength) %&gt;%
+  filter(lakeid == &quot;AL&quot;)</code></pre>
+<pre><code>## # A tibble: 383 × 2
+##    lakeid scalelength
+##    &lt;chr&gt;        &lt;dbl&gt;
+##  1 AL            2.70
+##  2 AL            2.70
+##  3 AL            2.70
+##  4 AL            3.02
+##  5 AL            3.02
+##  6 AL            3.02
+##  7 AL            3.02
+##  8 AL            3.34
+##  9 AL            3.34
+## 10 AL            3.34
+## # ℹ 373 more rows</code></pre>
+<p>Here we select family, genus, and species then filter for gestation
+greater than 15 months.</p>
+<pre class="r"><code>mammals %&gt;% 
+  select(family, genus, species, gestation) %&gt;% 
+  filter(gestation&gt;=15)</code></pre>
+<pre><code>## # A tibble: 8 × 4
+##   family         genus         species       gestation
+##   &lt;chr&gt;          &lt;chr&gt;         &lt;chr&gt;             &lt;dbl&gt;
+## 1 Delphinidae    Globicephala  macrorhynchus      15.2
+## 2 Physeteridae   Physeter      catodon            15.8
+## 3 Rhinocerotidae Ceratotherium simum              15.9
+## 4 Rhinocerotidae Diceros       bicornis           16.1
+## 5 Rhinocerotidae Rhinoceros    unicornis          16.4
+## 6 Rhinocerotidae Rhinoceros    sondaicus          16.5
+## 7 Elephantidae   Elephas       maximus            21.1
+## 8 Elephantidae   Loxodonta     africana           21.5</code></pre>
+</div>
+<div id="practice" class="section level2">
+<h2>Practice</h2>
+<ol style="list-style-type: decimal">
+<li>We are interested in the fish from the lakes “AL” and “AR” with a
+radii length between 2 and 4. Extract this information from the
+<code>fish</code> data. Use pipes!</li>
+</ol>
+<pre class="r"><code>fish %&gt;% 
+  select(lakeid, radii_length_mm) %&gt;% 
+  filter(lakeid == &quot;AL&quot; | lakeid == &quot;AR&quot;) %&gt;% #pull out variables of int
+  filter(between(radii_length_mm, 2,4)) %&gt;% #only these lakes
+  arrange(desc(radii_length_mm)) #sort to make easier to read</code></pre>
+<pre><code>## # A tibble: 253 × 2
+##    lakeid radii_length_mm
+##    &lt;chr&gt;            &lt;dbl&gt;
+##  1 AR                4.00
+##  2 AR                3.99
+##  3 AR                3.99
+##  4 AR                3.98
+##  5 AR                3.98
+##  6 AR                3.96
+##  7 AR                3.94
+##  8 AR                3.94
+##  9 AR                3.94
+## 10 AL                3.94
+## # ℹ 243 more rows</code></pre>
+</div>
+<div id="arrange" class="section level2">
+<h2><code>arrange()</code></h2>
+<p>The <code>arrange()</code> command is a bit like a sort command in
+excel. Note that the default is ascending order.</p>
+<pre class="r"><code>fish %&gt;% 
+  select(lakeid, scalelength) %&gt;% 
+  arrange(scalelength)</code></pre>
+<pre><code>## # A tibble: 4,033 × 2
+##    lakeid scalelength
+##    &lt;chr&gt;        &lt;dbl&gt;
+##  1 WS           0.628
+##  2 WS           0.637
+##  3 LSG          0.773
+##  4 WS           0.832
+##  5 LSG          1.15 
+##  6 WS           1.41 
+##  7 WS           1.41 
+##  8 WS           1.41 
+##  9 BO           1.43 
+## 10 BO           1.43 
+## # ℹ 4,023 more rows</code></pre>
+<p>To sort in decreasing order, wrap the variable name in
+<code>desc()</code>.</p>
+<pre class="r"><code>fish %&gt;% 
+  select(lakeid, scalelength) %&gt;% 
+  arrange(desc(scalelength))</code></pre>
+<pre><code>## # A tibble: 4,033 × 2
+##    lakeid scalelength
+##    &lt;chr&gt;        &lt;dbl&gt;
+##  1 WS            11.0
+##  2 WS            11.0
+##  3 WS            11.0
+##  4 WS            11.0
+##  5 WS            11.0
+##  6 WS            11.0
+##  7 WS            11.0
+##  8 WS            11.0
+##  9 WS            11.0
+## 10 WS            11.0
+## # ℹ 4,023 more rows</code></pre>
+<p><code>arrange()</code> can be very helpful in combination with the
+other functions.</p>
+<pre class="r"><code>fish %&gt;% 
+  select(lakeid, length, fish_id, scalelength) %&gt;% 
+  filter(lakeid==&quot;AL&quot;) %&gt;% 
+  arrange(fish_id)</code></pre>
+<pre><code>## # A tibble: 383 × 4
+##    lakeid length fish_id scalelength
+##    &lt;chr&gt;   &lt;dbl&gt;   &lt;dbl&gt;       &lt;dbl&gt;
+##  1 AL        167     299        2.70
+##  2 AL        167     299        2.70
+##  3 AL        167     299        2.70
+##  4 AL        175     300        3.02
+##  5 AL        175     300        3.02
+##  6 AL        175     300        3.02
+##  7 AL        175     300        3.02
+##  8 AL        194     301        3.34
+##  9 AL        194     301        3.34
+## 10 AL        194     301        3.34
+## # ℹ 373 more rows</code></pre>
+</div>
+<div id="practice-1" class="section level2">
+<h2>Practice</h2>
+<ol style="list-style-type: decimal">
+<li>We are interested in the radii length and scalelength of fish with
+the id <code>300</code>. Extract this information from the
+<code>fish</code> data. Please sort the data by radii length.</li>
+</ol>
+<pre class="r"><code>fish %&gt;% 
+  select(fish_id, radii_length_mm, scalelength,) %&gt;%  
+  filter(fish_id == 300) %&gt;% 
+  arrange(radii_length_mm)</code></pre>
+<pre><code>## # A tibble: 4 × 3
+##   fish_id radii_length_mm scalelength
+##     &lt;dbl&gt;           &lt;dbl&gt;       &lt;dbl&gt;
+## 1     300            1.23        3.02
+## 2     300            2.14        3.02
+## 3     300            2.67        3.02
+## 4     300            3.02        3.02</code></pre>
+</div>
+<div id="mutate" class="section level2">
+<h2><code>mutate()</code></h2>
+<p>Mutate allows us to create a new column from existing columns in a
+data frame. We are doing a small introduction here and will add some
+additional functions later. Let’s convert the length variable from cm to
+millimeters and create a new variable called length_mm.</p>
+<pre class="r"><code>fish %&gt;% 
+  mutate(length_mm = length*10) %&gt;% 
+  select(fish_id, length, length_mm)</code></pre>
+<pre><code>## # A tibble: 4,033 × 3
+##    fish_id length length_mm
+##      &lt;dbl&gt;  &lt;dbl&gt;     &lt;dbl&gt;
+##  1     299    167      1670
+##  2     299    167      1670
+##  3     299    167      1670
+##  4     300    175      1750
+##  5     300    175      1750
+##  6     300    175      1750
+##  7     300    175      1750
+##  8     301    194      1940
+##  9     301    194      1940
+## 10     301    194      1940
+## # ℹ 4,023 more rows</code></pre>
+</div>
+<div id="mutate_all" class="section level2">
+<h2><code>mutate_all()</code></h2>
+<p>This last function is super helpful when cleaning data. With “wild”
+data, there are often mixed entries (upper and lowercase), blank spaces,
+odd characters, etc. These all need to be dealt with before
+analysis.</p>
+<p>Here is an example that changes all entries to lowercase (if
+present).</p>
+<pre class="r"><code>mammals %&gt;%
+  mutate_all(tolower)</code></pre>
+<pre><code>## # A tibble: 1,440 × 13
+##    order    family genus species mass  gestation newborn weaning wean_mass AFR  
+##    &lt;chr&gt;    &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt;     &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt;     &lt;chr&gt;
+##  1 artioda… antil… anti… americ… 45375 8.13      3246.36 3       8900      13.53
+##  2 artioda… bovid… addax nasoma… 1823… 9.39      5480    6.5     -999      27.27
+##  3 artioda… bovid… aepy… melamp… 41480 6.35      5093    5.63    15900     16.66
+##  4 artioda… bovid… alce… busela… 1500… 7.9       10166.… 6.5     -999      23.02
+##  5 artioda… bovid… ammo… clarkei 28500 6.8       -999    -999    -999      -999 
+##  6 artioda… bovid… ammo… lervia  55500 5.08      3810    4       -999      14.89
+##  7 artioda… bovid… anti… marsup… 30000 5.72      3910    4.04    -999      10.23
+##  8 artioda… bovid… anti… cervic… 37500 5.5       3846    2.13    -999      20.13
+##  9 artioda… bovid… bison bison   4976… 8.93      20000   10.71   157500    29.45
+## 10 artioda… bovid… bison bonasus 5e+05 9.14      23000.… 6.6     -999      29.99
+## # ℹ 1,430 more rows
+## # ℹ 3 more variables: max_life &lt;chr&gt;, litter_size &lt;chr&gt;, litters_per_year &lt;chr&gt;</code></pre>
+<p>Using the across function we can specify individual columns.</p>
+<pre class="r"><code>mammals %&gt;% 
+  mutate(across(c(&quot;order&quot;, &quot;family&quot;), tolower))</code></pre>
+<pre><code>## # A tibble: 1,440 × 13
+##    order  family genus species   mass gestation newborn weaning wean_mass    AFR
+##    &lt;chr&gt;  &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt;    &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;     &lt;dbl&gt;  &lt;dbl&gt;
+##  1 artio… antil… Anti… americ… 4.54e4      8.13   3246.    3         8900   13.5
+##  2 artio… bovid… Addax nasoma… 1.82e5      9.39   5480     6.5       -999   27.3
+##  3 artio… bovid… Aepy… melamp… 4.15e4      6.35   5093     5.63     15900   16.7
+##  4 artio… bovid… Alce… busela… 1.5 e5      7.9   10167.    6.5       -999   23.0
+##  5 artio… bovid… Ammo… clarkei 2.85e4      6.8    -999  -999         -999 -999  
+##  6 artio… bovid… Ammo… lervia  5.55e4      5.08   3810     4         -999   14.9
+##  7 artio… bovid… Anti… marsup… 3   e4      5.72   3910     4.04      -999   10.2
+##  8 artio… bovid… Anti… cervic… 3.75e4      5.5    3846     2.13      -999   20.1
+##  9 artio… bovid… Bison bison   4.98e5      8.93  20000    10.7     157500   29.4
+## 10 artio… bovid… Bison bonasus 5   e5      9.14  23000.    6.6       -999   30.0
+## # ℹ 1,430 more rows
+## # ℹ 3 more variables: max_life &lt;dbl&gt;, litter_size &lt;dbl&gt;, litters_per_year &lt;dbl&gt;</code></pre>
+</div>
+<div id="if_else" class="section level2">
+<h2><code>if_else()</code></h2>
+<p>We will briefly introduce <code>if_else()</code> here because it
+allows us to use <code>mutate()</code> but not have the entire column
+affected in the same way. In a sense, this can function like find and
+replace in a spreadsheet program. With <code>ifelse()</code>, you first
+specify a logical statement, afterwards what needs to happen if the
+statement returns <code>TRUE</code>, and lastly what needs to happen if
+it’s <code>FALSE</code>.</p>
+<p>Have a look at the data from mammals below. Notice that the values
+for newborn include <code>-999.00</code>. This is sometimes used as a
+placeholder for NA (but, is a really bad idea). We can use
+<code>if_else()</code> to replace <code>-999.00</code> with
+<code>NA</code>.</p>
+<pre class="r"><code>mammals %&gt;% 
+  select(genus, species, newborn) %&gt;% 
+  arrange(newborn)</code></pre>
+<pre><code>## # A tibble: 1,440 × 3
+##    genus       species        newborn
+##    &lt;chr&gt;       &lt;chr&gt;            &lt;dbl&gt;
+##  1 Ammodorcas  clarkei           -999
+##  2 Bos         javanicus         -999
+##  3 Bubalus     depressicornis    -999
+##  4 Bubalus     mindorensis       -999
+##  5 Capra       falconeri         -999
+##  6 Cephalophus niger             -999
+##  7 Cephalophus nigrifrons        -999
+##  8 Cephalophus natalensis        -999
+##  9 Cephalophus leucogaster       -999
+## 10 Cephalophus ogilbyi           -999
+## # ℹ 1,430 more rows</code></pre>
+<pre class="r"><code>mammals %&gt;% 
+  select(genus, species, newborn) %&gt;%
+  mutate(newborn_new = ifelse(newborn == -999.00, NA, newborn))%&gt;% 
+  arrange(newborn)</code></pre>
+<pre><code>## # A tibble: 1,440 × 4
+##    genus       species        newborn newborn_new
+##    &lt;chr&gt;       &lt;chr&gt;            &lt;dbl&gt;       &lt;dbl&gt;
+##  1 Ammodorcas  clarkei           -999          NA
+##  2 Bos         javanicus         -999          NA
+##  3 Bubalus     depressicornis    -999          NA
+##  4 Bubalus     mindorensis       -999          NA
+##  5 Capra       falconeri         -999          NA
+##  6 Cephalophus niger             -999          NA
+##  7 Cephalophus nigrifrons        -999          NA
+##  8 Cephalophus natalensis        -999          NA
+##  9 Cephalophus leucogaster       -999          NA
+## 10 Cephalophus ogilbyi           -999          NA
+## # ℹ 1,430 more rows</code></pre>
+</div>
+<div id="practice-2" class="section level2">
+<h2>Practice</h2>
+<ol style="list-style-type: decimal">
+<li><p>Use <code>mutate()</code> to make a new column that is the half
+length of each fish: length_half = length/2. Select only fish_id,
+length, and length_half.</p></li>
+<li><p>We are interested in the family, genus, species and max life
+variables. Because the max life span for several mammals is unknown, the
+authors have use -999 in place of NA. Replace all of these values with
+NA in a new column titled <code>max_life_new</code>. Finally, sort the
+date in descending order by max_life_new. Which mammal has the oldest
+known life span?</p></li>
+</ol>
+</div>
+<div id="thats-it-lets-take-a-break-and-then-move-on-to-part-2" class="section level2">
+<h2>That’s it! Let’s take a break and then move on to part 2!</h2>
+<p>–&gt;<a href="https://jmledford3115.github.io/datascibiol/">Home</a></p>
 </div>
 
 
