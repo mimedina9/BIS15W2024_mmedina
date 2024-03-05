@@ -166,6 +166,7 @@ shinyApp(ui, server)
 
 Now let's add our server functions... 
 ```{r}
+
 ui <- dashboardPage(
   dashboardHeader(),
   dashboardSidebar(),
@@ -275,17 +276,61 @@ wolves %>%
   facet_wrap(~pop)
 ```
 
+```{r}
+ui <- dashboardPage(
+  dashboardHeader(title="Sex Composition by Wolf Population"),
+ 
+ dashboardSidebar(disable=T),
+ 
+ dashboardBody(
+    fluidRow(
+      box(width=3, 
+          
+        selectInput("x", "Select Population", choices=unique(wolves$pop)), hr()
+),
+box(width=7, 
+    plotOutput("plot", width="600px", height="400px")
+
+)
+)
+)
+)
+
+server <- function(input, output, session) { 
+
+  session$onSessionEnded(stopApp) #automatically stop the app when we close it
+  
+    output$plot <- renderPlot({
+      
+      wolves %>% 
+        filter(sex!="NA") %>% 
+        filter(pop==input$x) %>%  #filter is the reactive part
+        ggplot(aes(x=sex, fill=sex))+
+        geom_bar()
+        
+    })
+}
+shinyApp(ui, server)
+
+```
+
 ## Wrap-up  
 Please review the learning goals and be sure to use the code here as a reference when completing the homework.
 
 -->[Home](https://jmledford3115.github.io/datascibiol/)
 
 Sneaky Example...
+```{r}
+#install.packages("shinythemes")
+library(shinythemes)
+```
+
+
 ```{r, eval=F, echo=T}
 ui <- fluidPage(    
   
-  #shinythemes::themeSelector(),  # <--- Add this somewhere in the UI
-  theme = shinytheme("cerulean"),
+  shinythemes::themeSelector(),  # <--- Add this somewhere in the UI
+  #theme = shinytheme("cerulean"),
   
   titlePanel("Log 10 Homerange by Taxon"), # give the page a title
   
