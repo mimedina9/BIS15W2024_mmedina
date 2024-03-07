@@ -26,22 +26,22 @@ library(dplyr)
 
 1.
 ```{r}
-blood_count <- read_csv("data/blood_count.csv")
+blood_count <- read_csv("data/blood_count_dataset.csv")
 ```
 
 2. 
 ```{r}
-glmpse(blood_count)
+glimpse(blood_count)
 
 ```
 
 3. 
 ```{r}
 blood_count %>% 
-  group_by(gender) %>% 
-  summarize(min=min(red_blood_cells)
-            mean=maen(red_blood_cells),
-            max=max(red_blood_cells)
+  group_by(Gender) %>% 
+  summarize(min=min(Red_Blood_Cells),
+            mean=mean(Red_Blood_Cells),
+            max=max(Red_Blood_Cells))
 ```
 
 
