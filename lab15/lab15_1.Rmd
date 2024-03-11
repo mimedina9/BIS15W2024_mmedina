@@ -1,6 +1,6 @@
 ---
 title: "BIS15L_AI_class"
-author: "Your Name"
+author: "Maya Medina"
 date: "`r Sys.Date()`"
 output: html_document
 ---
@@ -29,13 +29,15 @@ Go to Tools -> Global Options -> Copilot -> Enable Git
 ## Exploration Questions:
 Lets get some get a feel for what copilot (or ChatGPT) does, use Github Copilot to autocomplete the questions below. You can alternatively paste the questions in ChatGPT or Microsoft Copilot.
 1. What is AI?
-
+AI is like teaching computers to be really smart. It's all about making computers act more like us, so they can help us out and do cool stuff!
 2. What is ChatGPT?
-
+It's a powerful language model developed by OpenAI, based on the GPT (Generative Pre-trained Transformer) architecture. ChatGPT is designed to understand and generate human-like text based on the input it receives. It can engage in conversations on a wide range of topics, answer questions, provide explanations, and even generate creative content like stories or poems. It's like having a knowledgeable and responsive AI companion to chat with!
 3. What is Github Copilot?
+GitHub Copilot is an AI-powered coding assistant developed by GitHub in collaboration with OpenAI. It's designed to help developers write code more efficiently by providing suggestions, auto-completions, and even generating entire lines or blocks of code based on the context of what the developer is working on.
 
-4. [Try it yourself: Insert your own question here]
 
+4. Can ChatGPT help when you are stuck trying to fix code?
+While ChatGPT can offer general programming advice and help clarify concepts related to coding, it's not specifically designed to debug or fix code issues. However, you can certainly describe the problem you're encountering, and I can provide guidance, suggest potential solutions, or offer debugging strategies based on the information provided. 
 ## Load the libraries  
 ```{r message=FALSE, warning=FALSE}
 library(tidyverse)
@@ -48,7 +50,7 @@ library(shinydashboard)
 ## Load the Data: 
 ```{r}
 #load the Netflix Data in your Data folder, save it under the object name netflix
-
+netflix <- read_csv("data/netflix_titles.csv")
 
 ```
 
@@ -58,7 +60,7 @@ library(shinydashboard)
 ## Lets Practice:
 Explore the elements in your data: include a comment within your code chunk to prompt Copilot to use the function of your choice
 ```{r}
-
+names(netflix)
 
 ```
 *Did copilot use your preferred method to get the summary of the data? If not, how could you improve the prompt to get the desired output?*
@@ -66,20 +68,21 @@ Explore the elements in your data: include a comment within your code chunk to p
 
 Sort out the movies from the netflix into an new object called netflix_movies
 ```{r} 
-
+netflix_movies <- netflix %>% 
+  filter(type=="Movie")
 ```
 
 
 Which director has the most movies on netflix?
 ```{r}
-
+count(netflix_movies, director, sort=TRUE) %>% filter(!is.na(director)) %>% group_by(director) %>% top_n(1, wt=n)
 
 ```
 *Do you see anything wrong with the table above, look at row 1. Write a prompt below to fix this.*
 
 [insert your prompt here]
 ```{r}
-
+netflix
 ```
 
 
@@ -94,7 +97,7 @@ Which director had the most movies by release year and remove the NA's?
 
 [Insert your prompt here]
 ```{r}
-
+                                                                                                                                                                                        
 ```
 
 
